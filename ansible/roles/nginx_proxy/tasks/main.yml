@@ -1,13 +1,13 @@
 ---
 - name: install nginx
   become: yes
-  apt: 
+  apt:
     name: nginx
     state: latest
     update_cache: yes
 
 - name: remove default
-  file: 
+  file:
     path: /etc/nginx/sites-enabled/default
     state: absent
 
