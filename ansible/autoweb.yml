@@ -1,0 +1,14 @@
+---
+- hosts: loadbalancers
+  become: yes
+  vars_files:
+    - vars/all.yml
+  roles:
+    - nginx_proxy
+
+- hosts: backends
+  become: yes
+  vars_files:
+    - vars/all.yml
+  roles:
+    - nginx

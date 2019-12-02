@@ -1,0 +1,51 @@
+---
+- name: install nginx
+  become: yes
+  apt: 
+    name: nginx
+    state: latest
+    update_cache: yes
+
+- name: remove default
+  file: 
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: configure nginx proxy
+  become: yes
+  template:
+    src: roles/nginx_proxy/templates/proxy.j2
+    dest: /etc/nginx/sites-available/default
+
+- name: create symlink for proxyconf
+  become: yes
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify: restart nginx
+
+- name: restart nginx
+  become: yes
+  service:
+    name: nginx
+    state: restarted
+
+- name: tests
+  block:
+    - name: get test page_1
+      uri:
+        url: "http://{{ ansible_host }}/test.html"
+        method: GET
+        return_content: yes
+      register: page_1
+    - debug:
+        var: page_1.x_who
+    - name: get test page_2
+      uri:
+        url: "http://{{ ansible_host }}/test.html"
+        method: GET
+        return_content: yes
+      register: page_2
+    - debug:
+        var: page_2.x_who

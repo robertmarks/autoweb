@@ -1,0 +1,8 @@
+---
+server:
+  install: '1'
+  timezone: UTC
+  locale: en_GB.UTF-8
+nginx:
+  install: '1'
+  servername: localhost
