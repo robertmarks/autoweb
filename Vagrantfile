@@ -1,9 +1,11 @@
+BACKEND_VM_COUNT=2
+
 Vagrant.configure("2") do |config|
 	# Set vagrant box
 	config.vm.box = "ubuntu/bionic64"
 
 	# Build 2 backends
-	(1..2).each do |be|
+	(1..BACKEND_VM_COUNT).each do |be|
 		config.vm.define "backend_#{be}" do |backend|
 			backend.vm.provider :virtualbox do |vb|
 				vb.name = "backend_#{be}"

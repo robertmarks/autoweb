@@ -1,33 +1,21 @@
 ---
-- name: install nginx
-  become: yes
-  apt:
-    name: nginx
-    state: latest
-    update_cache: yes
-
-- name: remove default
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-
 - name: configure nginx backend
   become: yes
   template:
-    src: roles/nginx/templates/backendconf.j2
+    src: roles/nginx-backend/templates/backendconf.j2
     dest: /etc/nginx/sites-available/default
 
 - name: create symlink for backendconf
   become: yes
   file:
     src: /etc/nginx/sites-available/default
-    dest: /etc/nginx/sites-enabled/default
+    dest: /etc/nginx/sites-enabled/default.conf
     state: link
 
 - name: create main index page
   become: yes
   template:
-    src: roles/nginx/templates/hello.j2
+    src: roles/nginx-backend/templates/hello.j2
     dest: /var/www/html/index.html
 
 - name: create page for test

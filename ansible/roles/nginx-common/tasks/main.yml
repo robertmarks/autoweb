@@ -1,0 +1,50 @@
+---
+- name: add nginx repository
+  become: yes
+  template:
+    src: roles/nginx-common/templates/nginx-repository.j2
+    dest: /etc/apt/sources.list.d/nginx.list
+
+- name: add nginx signing key
+  become: yes
+  apt_key:
+    url: http://nginx.org/keys/nginx_signing.key
+    state: present
+
+- name: install nginx
+  become: yes
+  apt:
+    name: nginx
+    update_cache: yes
+
+- name: create multiple directories in a loop
+  file:
+    path: "{{ item }}"
+    state: directory
+  register: file_output
+  loop:
+    - "/etc/nginx/sites-available"
+    - "/etc/nginx/sites-enabled"
+    - "/var/www/html"
+
+- name: delete default nginx html files if they exit
+  file:
+    path: "/usr/share/nginx/html/{{ item }}"
+    state: absent
+  loop:
+    - "50x.html"
+    - "index.html"
+
+- name: remove default
+  become: yes
+  file:
+    path: "/etc/nginx/conf.d/default"
+    state: absent
+
+- name: edit nginx.conf to use only enabled sites
+  become: yes
+  lineinfile:
+    dest: /etc/nginx/nginx.conf
+    regexp: '^(.*)[a-z.\/*;](.*)$'
+    line:  'include /etc/nginx/sites-enabled/*.conf;'
+    backrefs: yes

@@ -1,0 +1,13 @@
+---
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%admin'
+    line: '%admin ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: set time to utc
+  become: yes
+  timezone:
+    name: "{{ server.timezone }}"

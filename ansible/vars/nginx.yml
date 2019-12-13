@@ -1,0 +1,4 @@
+---
+nginx:
+  install: '1'
+  servername: localhost

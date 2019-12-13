@@ -1,27 +1,15 @@
 ---
-- name: install nginx
-  become: yes
-  apt:
-    name: nginx
-    state: latest
-    update_cache: yes
-
-- name: remove default
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-
 - name: configure nginx proxy
   become: yes
   template:
-    src: roles/nginx_proxy/templates/proxy.j2
+    src: roles/nginx-proxy/templates/proxy.j2
     dest: /etc/nginx/sites-available/default
 
 - name: create symlink for proxyconf
   become: yes
   file:
     src: /etc/nginx/sites-available/default
-    dest: /etc/nginx/sites-enabled/default
+    dest: /etc/nginx/sites-enabled/default.conf
     state: link
   notify: restart nginx
 

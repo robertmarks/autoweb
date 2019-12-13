@@ -1,0 +1,10 @@
+---
+- hosts: backends
+  become: yes
+  vars_files:
+    - vars/all.yml
+    - vars/nginx.yml
+  roles:
+    - common
+    - nginx-common
+    - nginx-backend
